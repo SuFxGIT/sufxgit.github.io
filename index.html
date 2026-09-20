@@ -4,35 +4,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SUFX Apps</title>
-  <meta name="description" content="Apps by SUFX. Simple, focused mobile apps, starting with EXPN, a personal expense and income tracker.">
+  <meta name="description" content="Apps by SUFX. EXPN, a personal expense and income tracker for iOS and Android, and Media Clue, a daily movie, TV and anime screenshot guessing game for the web.">
   <link rel="icon" type="image/png" href="assets/expn.png">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
+    <div class="container header-row">
       <a class="wordmark" href="/">SUFX<span>.</span></a>
+      <nav class="site-nav">
+        <a href="#mobile">Mobile</a>
+        <a href="#web">Web</a>
+        <a href="#support">Support</a>
+      </nav>
     </div>
   </header>
 
   <main class="container">
     <section class="hero">
       <h1>Apps by SUFX</h1>
-      <p>Simple, focused mobile apps that respect your data.</p>
+      <p>Simple, focused apps that respect your data.</p>
     </section>
 
-    <section>
-      <h2 class="section-title">Apps</h2>
-      <div class="card">
-        <img src="assets/expn.png" alt="EXPN app icon">
-        <div>
-          <h3>EXPN</h3>
-          <p>Personal expense and income tracker. Multiple profiles, budgets, stats and trends, available in 10 languages. Your financial data stays on your device.</p>
-          <div class="card-buttons">
-            <span class="btn btn-disabled">Google Play, coming soon</span>
-            <span class="btn btn-disabled">App Store, coming soon</span>
+    <section id="mobile">
+      <h2 class="section-title">Mobile Apps</h2>
+      <div class="grid">
+        <article class="card">
+          <div class="card-head">
+            <img src="assets/expn.png" alt="EXPN app icon">
+            <div>
+              <h3>EXPN</h3>
+              <p class="card-tag">iOS and Android</p>
+            </div>
           </div>
-        </div>
+          <p>Personal expense and income tracker with profiles, budgets, stats and trends, in 10 languages. Your data stays on your device.</p>
+          <div class="card-buttons">
+            <a class="btn" href="https://apps.apple.com/us/app/expn/id6799539266" target="_blank" rel="noopener">App Store</a>
+            <a class="btn" href="https://play.google.com/store/apps/details?id=com.expn.app&amp;hl=en" target="_blank" rel="noopener">Google Play</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="web">
+      <h2 class="section-title">Web Apps</h2>
+      <div class="grid">
+        <article class="card">
+          <div class="card-head">
+            <img src="assets/media-clue.svg" alt="Media Clue app icon">
+            <div>
+              <h3>Media Clue</h3>
+              <p class="card-tag">Browser, free to play</p>
+            </div>
+          </div>
+          <p>Guess the movie, TV show, or anime from up to five screenshots. A new puzzle unlocks every 24 hours.</p>
+          <div class="card-buttons">
+            <a class="btn" href="https://media-clue.web.app" target="_blank" rel="noopener">Open app</a>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -40,13 +69,15 @@
       <h2 class="section-title">Support</h2>
       <div class="support">
         <p>Questions, problems, or feedback about any SUFX app? Email <a href="mailto:sufxga@gmail.com">sufxga@gmail.com</a> and you will get a reply as soon as possible.</p>
+        <a class="btn" href="mailto:sufxga@gmail.com">Email support</a>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2026 SUFX &middot; <a href="mailto:sufxga@gmail.com">sufxga@gmail.com</a> &middot; <a href="/privacy/">Privacy Policy</a></p>
+    <div class="container footer-row">
+      <p>&copy; 2026 SUFX</p>
+      <p><a href="mailto:sufxga@gmail.com">sufxga@gmail.com</a> &middot; <a href="/privacy/">Privacy Policy</a></p>
     </div>
   </footer>
 </body>
