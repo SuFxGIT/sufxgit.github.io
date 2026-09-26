@@ -271,12 +271,11 @@ section[id] {
   background: var(--text);
   color: var(--bg);
   white-space: nowrap;
-  transition: transform 0.15s, background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .btn:hover {
   text-decoration: none;
-  transform: translateY(-1px);
   background: #FFFFFF;
 }
 
@@ -296,10 +295,6 @@ section[id] {
   border: 1px solid var(--line);
   color: var(--text-secondary);
   cursor: default;
-}
-
-.btn-disabled:hover {
-  transform: none;
 }
 
 /* Support */
