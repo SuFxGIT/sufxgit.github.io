@@ -36,6 +36,27 @@
     steps.forEach(function (s) { stepObs.observe(s); });
   }
 
+  /* Languages marquee: clone the group until the track covers the viewport twice, then
+     shift by exactly one group width so every gap, including the seam, is identical */
+  var marquee = document.querySelector('.marquee');
+  if (marquee) {
+    var track = marquee.querySelector('.marquee-track');
+    var proto = track.querySelector('.marquee-group');
+    function sizeMarquee() {
+      var groups = track.querySelectorAll('.marquee-group');
+      for (var i = 1; i < groups.length; i++) track.removeChild(groups[i]);
+      var gw = proto.getBoundingClientRect().width;
+      if (!gw) return;
+      var need = Math.ceil(window.innerWidth / gw) + 1;
+      for (var k = 1; k < need; k++) track.appendChild(proto.cloneNode(true));
+      marquee.style.setProperty('--shift', '-' + gw + 'px');
+      marquee.style.setProperty('--dur', (gw / 55) + 's');
+    }
+    sizeMarquee();
+    var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(sizeMarquee, 150); }, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeMarquee);
+  }
+
   /* Counters */
   var counters = document.querySelectorAll('[data-count]');
   var countObs = new IntersectionObserver(function (entries) {
@@ -102,7 +123,8 @@
     /* the lens eases toward the pointer so the grid feels fluid rather than snapping */
     lens.x += (mouse.x - lens.x) * 0.14;
     lens.y += (mouse.y - lens.y) * 0.14;
-    var R = 200, R2 = R * R, PUSH = 26;
+    var R = 230, R2 = R * R;
+    ctx.lineWidth = 1.4; ctx.lineCap = 'round';
     for (var r = 0; r < rows; r++) {
       var y = r * SP + SP / 2;
       for (var c = 0; c < cols; c++) {
@@ -110,16 +132,20 @@
         var w = Math.sin(x * 0.016 + t * 0.5) * Math.cos((y + sy * 0.25) * 0.013 - t * 0.35);
         var a = 0.06 + (w + 1) * 0.05;
         var dx = x - lens.x, dy = y - lens.y, d2 = dx * dx + dy * dy;
-        var px = x, py = y, s = 2;
-        if (d2 < R2 && d2 > 0.01) {
+        if (d2 < R2 && d2 > 1) {
+          /* a needle: rotates to sit tangentially around the pointer, longer the closer it is */
           var d = Math.sqrt(d2), f = 1 - d / R;
           f = f * f * (3 - 2 * f);
-          px = x + dx / d * f * PUSH;
-          py = y + dy / d * f * PUSH;
-          s = 2 + f * 1.2;
+          var len = 2 + f * 11, ux = -dy / d, uy = dx / d;
+          ctx.strokeStyle = 'rgba(255,255,255,' + (a + f * 0.35) + ')';
+          ctx.beginPath();
+          ctx.moveTo(x - ux * len / 2, y - uy * len / 2);
+          ctx.lineTo(x + ux * len / 2, y + uy * len / 2);
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
+          ctx.fillRect(x - 1, y - 1, 2, 2);
         }
-        ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
-        ctx.fillRect(px - s / 2, py - s / 2, s, s);
       }
     }
     var heroBottom = heroH - sy;
