@@ -16,15 +16,17 @@ on a `<span>` for a store that is not live yet.
 `/expn/` is a standalone landing page for EXPN with its own `expn/expn.css` and `expn/expn.js`
 (vanilla, no dependencies). It loads Inter from Google Fonts; that is the only external resource.
 
-Screenshots live in `assets/expn/` as `shot-1.png` to `shot-6.png`, cropped out of the store
-marketing art in `/mnt/user/projects/expn-screenshots/` (ios/ and android/) with Pillow run in Docker. Current mapping:
+Screenshots live in `assets/expn/` as `shot-1.png` to `shot-6.png`. They are all cropped from the
+Android store art in `/mnt/user/projects/expn-screenshots/android/` (inner screen x 243 to 883,
+1274px tall starting below the status bar, nav bar excluded) with Pillow in Docker, so every frame
+has identical chrome. Mapping:
 
-1. `shot-1` hero: Expenses tab (ios/2)
-2. `shot-2` Stats, Trends, Savings rate (android/6)
-3. `shot-3` Stats, month view with Total Net, used for the cash flow step (android/1)
-4. `shot-4` Stats, Overview (ios/1)
-5. `shot-5` Calendar, stands in for the reminders step until a reminder screenshot exists (ios/5)
-6. `shot-6` Budget tab (ios/4)
+1. `shot-1` hero: Expenses (android/2)
+2. `shot-2` Trends, savings rate and cash flow (android/6)
+3. `shot-3` Stats overview (android/1)
+4. `shot-4` Calendar, used for the reminders step (android/5, crop starts at y=518)
+5. `shot-5` Budgets (android/4)
+6. `shot-6` Income (android/3), currently unused
 
 Phone frames show a styled placeholder if a file is missing, so a removed shot never breaks the page.
 Images have no cache-bust query string, so when replacing a shot use a new filename (and update
