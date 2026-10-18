@@ -95,25 +95,31 @@
     ctx.stroke();
   }
 
+  var lens = { x: -1e4, y: -1e4 };
   function draw() {
     ctx.clearRect(0, 0, W, H);
     var sy = window.scrollY || 0;
-    var R = 170, R2 = R * R;
+    /* the lens eases toward the pointer so the grid feels fluid rather than snapping */
+    lens.x += (mouse.x - lens.x) * 0.14;
+    lens.y += (mouse.y - lens.y) * 0.14;
+    var R = 200, R2 = R * R, PUSH = 26;
     for (var r = 0; r < rows; r++) {
       var y = r * SP + SP / 2;
       for (var c = 0; c < cols; c++) {
         var x = c * SP + SP / 2;
         var w = Math.sin(x * 0.016 + t * 0.5) * Math.cos((y + sy * 0.25) * 0.013 - t * 0.35);
         var a = 0.06 + (w + 1) * 0.05;
-        var dx = x - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;
-        var m = d2 < R2 ? 1 - Math.sqrt(d2) / R : 0;
-        if (m > 0) {
-          ctx.fillStyle = 'rgba(255,140,0,' + Math.min(1, a + m * 0.75) + ')';
-          ctx.beginPath(); ctx.arc(x, y, 1 + m * 1.5, 0, 6.2832); ctx.fill();
-        } else {
-          ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
-          ctx.fillRect(x - 1, y - 1, 2, 2);
+        var dx = x - lens.x, dy = y - lens.y, d2 = dx * dx + dy * dy;
+        var px = x, py = y, s = 2;
+        if (d2 < R2 && d2 > 0.01) {
+          var d = Math.sqrt(d2), f = 1 - d / R;
+          f = f * f * (3 - 2 * f);
+          px = x + dx / d * f * PUSH;
+          py = y + dy / d * f * PUSH;
+          s = 2 + f * 1.2;
         }
+        ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
+        ctx.fillRect(px - s / 2, py - s / 2, s, s);
       }
     }
     var heroBottom = heroH - sy;
