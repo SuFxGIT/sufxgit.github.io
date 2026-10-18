@@ -225,6 +225,10 @@ section[id] {
   background: var(--accent-soft);
 }
 
+.card-link { color: inherit; border-radius: 10px; }
+.card-link:hover h3 { color: var(--accent); }
+.card-link h3 { transition: color 0.15s; }
+
 .card-head {
   display: flex;
   align-items: center;
