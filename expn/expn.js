@@ -79,7 +79,8 @@
 
 })();
 
-/* Background: a fine dot grid that breathes in a slow wave, warms to orange near the cursor,
+/* Background: a fine dot grid that breathes in a slow wave, a single orange dot that snaps to the
+   grid under the pointer with a short fading trail,
    and a thin savings curve drifting across the hero. Static under reduced motion. */
 (function () {
   'use strict';
@@ -116,37 +117,33 @@
     ctx.stroke();
   }
 
-  var lens = { x: -1e4, y: -1e4 };
+  var trail = [];
   function draw() {
     ctx.clearRect(0, 0, W, H);
     var sy = window.scrollY || 0;
-    /* the lens eases toward the pointer so the grid feels fluid rather than snapping */
-    lens.x += (mouse.x - lens.x) * 0.14;
-    lens.y += (mouse.y - lens.y) * 0.14;
-    var R = 230, R2 = R * R;
-    ctx.lineWidth = 1.4; ctx.lineCap = 'round';
     for (var r = 0; r < rows; r++) {
       var y = r * SP + SP / 2;
       for (var c = 0; c < cols; c++) {
         var x = c * SP + SP / 2;
         var w = Math.sin(x * 0.016 + t * 0.5) * Math.cos((y + sy * 0.25) * 0.013 - t * 0.35);
         var a = 0.06 + (w + 1) * 0.05;
-        var dx = x - lens.x, dy = y - lens.y, d2 = dx * dx + dy * dy;
-        if (d2 < R2 && d2 > 1) {
-          /* a needle: rotates to sit tangentially around the pointer, longer the closer it is */
-          var d = Math.sqrt(d2), f = 1 - d / R;
-          f = f * f * (3 - 2 * f);
-          var len = 2 + f * 11, ux = -dy / d, uy = dx / d;
-          ctx.strokeStyle = 'rgba(255,255,255,' + (a + f * 0.35) + ')';
-          ctx.beginPath();
-          ctx.moveTo(x - ux * len / 2, y - uy * len / 2);
-          ctx.lineTo(x + ux * len / 2, y + uy * len / 2);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
-          ctx.fillRect(x - 1, y - 1, 2, 2);
-        }
+        ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
+        ctx.fillRect(x - 1, y - 1, 2, 2);
       }
+    }
+    /* pointer: the nearest grid dot lights orange, the last few fade out behind it */
+    if (mouse.x > -1e3) {
+      var gx = Math.round((mouse.x - SP / 2) / SP) * SP + SP / 2;
+      var gy = Math.round((mouse.y - SP / 2) / SP) * SP + SP / 2;
+      var lastT = trail.length ? trail[trail.length - 1] : null;
+      if (!lastT || lastT.x !== gx || lastT.y !== gy) { trail.push({ x: gx, y: gy, t: t }); if (trail.length > 14) trail.shift(); }
+    }
+    for (var i = 0; i < trail.length; i++) {
+      var p = trail[i], age = t - p.t, life = 0.9;
+      if (age > life) continue;
+      var k = 1 - age / life;
+      ctx.fillStyle = 'rgba(255,140,0,' + (0.15 + k * 0.85) + ')';
+      ctx.beginPath(); ctx.arc(p.x, p.y, 1.2 + k * 1.3, 0, 6.2832); ctx.fill();
     }
     var heroBottom = heroH - sy;
     if (heroBottom > 0) {
@@ -175,4 +172,51 @@
   document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
   if (reduced) window.addEventListener('scroll', draw, { passive: true });
   resize(); start();
+})();
+
+/* Custom scrollbar: the native one is hidden in CSS; this draws a thin track on the right with an
+   orange thumb that fades when idle. Drag the thumb or click the track to scroll. */
+(function () {
+  'use strict';
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  var bar = document.createElement('div'); bar.className = 'sb';
+  var thumb = document.createElement('div'); thumb.className = 'sb-thumb';
+  bar.appendChild(thumb); document.body.appendChild(bar);
+  var hideT, dragging = false, dragOff = 0;
+  function layout() {
+    var sh = document.documentElement.scrollHeight, ch = window.innerHeight;
+    if (sh <= ch + 1) { bar.style.display = 'none'; return; }
+    bar.style.display = '';
+    var trackH = bar.clientHeight;
+    var h = Math.max(36, trackH * ch / sh);
+    var y = (trackH - h) * (window.scrollY / (sh - ch));
+    thumb.style.height = h + 'px';
+    thumb.style.transform = 'translateY(' + y + 'px)';
+  }
+  function show() { bar.classList.add('is-on'); clearTimeout(hideT); if (!dragging) hideT = setTimeout(function () { bar.classList.remove('is-on'); }, 1100); }
+  function onScroll() { layout(); show(); }
+  function toScroll(clientY) {
+    var rect = bar.getBoundingClientRect(), h = thumb.offsetHeight;
+    var frac = (clientY - rect.top - dragOff) / (rect.height - h);
+    var sh = document.documentElement.scrollHeight, ch = window.innerHeight;
+    window.scrollTo(0, Math.max(0, Math.min(1, frac)) * (sh - ch));
+  }
+  thumb.addEventListener('pointerdown', function (e) {
+    dragging = true; bar.classList.add('is-drag'); dragOff = e.clientY - thumb.getBoundingClientRect().top;
+    document.documentElement.style.scrollBehavior = 'auto';
+    thumb.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  thumb.addEventListener('pointermove', function (e) { if (dragging) toScroll(e.clientY); });
+  thumb.addEventListener('pointerup', function () { dragging = false; bar.classList.remove('is-drag'); document.documentElement.style.scrollBehavior = ''; show(); });
+  bar.addEventListener('pointerdown', function (e) {
+    if (e.target !== bar) return;
+    dragOff = thumb.offsetHeight / 2;
+    document.documentElement.style.scrollBehavior = 'auto'; toScroll(e.clientY); document.documentElement.style.scrollBehavior = '';
+  });
+  bar.addEventListener('pointerenter', function () { clearTimeout(hideT); bar.classList.add('is-on'); });
+  bar.addEventListener('pointerleave', function () { if (!dragging) show(); });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', layout, { passive: true });
+  if ('ResizeObserver' in window) new ResizeObserver(layout).observe(document.body);
+  layout();
 })();
