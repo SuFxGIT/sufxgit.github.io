@@ -79,8 +79,7 @@
 
 })();
 
-/* Background: a fine dot grid that breathes in a slow wave, a single orange dot that snaps to the
-   grid under the pointer with a short fading trail,
+/* Background: a fine dot grid that breathes in a slow wave
    and a thin savings curve drifting across the hero. Static under reduced motion. */
 (function () {
   'use strict';
@@ -88,9 +87,8 @@
   if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var fine = window.matchMedia('(pointer: fine)').matches;
   var SP = 28, W = 0, H = 0, cols = 0, rows = 0, heroH = 0;
-  var mouse = { x: -1e4, y: -1e4 }, t = 0, last = 0, running = false;
+  var t = 0, last = 0, running = false;
 
   function resize() {
     var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -117,7 +115,6 @@
     ctx.stroke();
   }
 
-  var trail = [];
   function draw() {
     ctx.clearRect(0, 0, W, H);
     var sy = window.scrollY || 0;
@@ -130,20 +127,6 @@
         ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
         ctx.fillRect(x - 1, y - 1, 2, 2);
       }
-    }
-    /* pointer: the nearest grid dot lights orange, the last few fade out behind it */
-    if (mouse.x > -1e3) {
-      var gx = Math.round((mouse.x - SP / 2) / SP) * SP + SP / 2;
-      var gy = Math.round((mouse.y - SP / 2) / SP) * SP + SP / 2;
-      var lastT = trail.length ? trail[trail.length - 1] : null;
-      if (!lastT || lastT.x !== gx || lastT.y !== gy) { trail.push({ x: gx, y: gy, t: t }); if (trail.length > 14) trail.shift(); }
-    }
-    for (var i = 0; i < trail.length; i++) {
-      var p = trail[i], age = t - p.t, life = 0.9;
-      if (age > life) continue;
-      var k = 1 - age / life;
-      ctx.fillStyle = 'rgba(255,140,0,' + (0.15 + k * 0.85) + ')';
-      ctx.beginPath(); ctx.arc(p.x, p.y, 1.2 + k * 1.3, 0, 6.2832); ctx.fill();
     }
     var heroBottom = heroH - sy;
     if (heroBottom > 0) {
@@ -165,10 +148,6 @@
   function stop() { running = false; }
 
   window.addEventListener('resize', resize, { passive: true });
-  if (fine) {
-    window.addEventListener('pointermove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
-    window.addEventListener('pointerleave', function () { mouse.x = -1e4; mouse.y = -1e4; }, { passive: true });
-  }
   document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
   if (reduced) window.addEventListener('scroll', draw, { passive: true });
   resize(); start();
