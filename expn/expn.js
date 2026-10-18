@@ -174,48 +174,68 @@
   resize(); start();
 })();
 
-/* Custom scrollbar: the native one is hidden in CSS; this draws a thin track on the right with an
-   orange thumb that fades when idle. Drag the thumb or click the track to scroll. */
+/* Custom scrollbar with a section map: the native one is hidden in CSS. A wide hover zone on
+   the right holds a track, an orange thumb, and one marker per [data-sb] section. Drag the thumb,
+   click the track, or click a marker to jump. The current section's marker is highlighted. */
 (function () {
   'use strict';
   if (window.matchMedia('(pointer: coarse)').matches) return;
   var bar = document.createElement('div'); bar.className = 'sb';
+  var track = document.createElement('div'); track.className = 'sb-track';
   var thumb = document.createElement('div'); thumb.className = 'sb-thumb';
-  bar.appendChild(thumb); document.body.appendChild(bar);
+  track.appendChild(thumb); bar.appendChild(track); document.body.appendChild(bar);
+  var sections = Array.prototype.slice.call(document.querySelectorAll('[data-sb]'));
+  var marks = sections.map(function (sec) {
+    var m = document.createElement('div'); m.className = 'sb-mark'; m.setAttribute('data-label', sec.getAttribute('data-sb'));
+    m.addEventListener('click', function () { window.scrollTo({ top: target(sec), behavior: 'smooth' }); });
+    bar.appendChild(m); return m;
+  });
   var hideT, dragging = false, dragOff = 0;
+  var hdr = document.querySelector('.site-header');
+  function maxScroll() { return document.documentElement.scrollHeight - window.innerHeight; }
+  function target(sec) {
+    var off = (hdr ? hdr.offsetHeight : 0) + 16;
+    var top = sec.getBoundingClientRect().top + window.scrollY;
+    return Math.max(0, Math.min(maxScroll(), sec === sections[0] ? 0 : top - off));
+  }
   function layout() {
-    var sh = document.documentElement.scrollHeight, ch = window.innerHeight;
-    if (sh <= ch + 1) { bar.style.display = 'none'; return; }
+    var max = maxScroll(), ch = window.innerHeight;
+    if (max <= 1) { bar.style.display = 'none'; return; }
     bar.style.display = '';
-    var trackH = bar.clientHeight;
-    var h = Math.max(36, trackH * ch / sh);
-    var y = (trackH - h) * (window.scrollY / (sh - ch));
+    var trackH = track.clientHeight;
+    var h = Math.max(48, trackH * ch / (max + ch));
+    var y = (trackH - h) * (window.scrollY / max);
     thumb.style.height = h + 'px';
     thumb.style.transform = 'translateY(' + y + 'px)';
+    var cur = 0, sy = window.scrollY + 2;
+    sections.forEach(function (sec, i) {
+      var ty = target(sec);
+      marks[i].style.top = (6 + (trackH - h) * (ty / max) + h / 2) + 'px';
+      if (ty <= sy) cur = i;
+    });
+    marks.forEach(function (m, i) { m.classList.toggle('is-current', i === cur); });
   }
-  function show() { bar.classList.add('is-on'); clearTimeout(hideT); if (!dragging) hideT = setTimeout(function () { bar.classList.remove('is-on'); }, 1100); }
-  function onScroll() { layout(); show(); }
+  function show() { bar.classList.add('is-on'); clearTimeout(hideT); if (!dragging) hideT = setTimeout(function () { bar.classList.remove('is-on'); }, 1200); }
   function toScroll(clientY) {
-    var rect = bar.getBoundingClientRect(), h = thumb.offsetHeight;
+    var rect = track.getBoundingClientRect(), h = thumb.offsetHeight;
     var frac = (clientY - rect.top - dragOff) / (rect.height - h);
-    var sh = document.documentElement.scrollHeight, ch = window.innerHeight;
-    window.scrollTo(0, Math.max(0, Math.min(1, frac)) * (sh - ch));
+    window.scrollTo(0, Math.max(0, Math.min(1, frac)) * maxScroll());
   }
   thumb.addEventListener('pointerdown', function (e) {
     dragging = true; bar.classList.add('is-drag'); dragOff = e.clientY - thumb.getBoundingClientRect().top;
     document.documentElement.style.scrollBehavior = 'auto';
-    thumb.setPointerCapture(e.pointerId); e.preventDefault();
+    thumb.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
   });
   thumb.addEventListener('pointermove', function (e) { if (dragging) toScroll(e.clientY); });
   thumb.addEventListener('pointerup', function () { dragging = false; bar.classList.remove('is-drag'); document.documentElement.style.scrollBehavior = ''; show(); });
   bar.addEventListener('pointerdown', function (e) {
-    if (e.target !== bar) return;
+    if (e.target !== bar && e.target !== track) return;
     dragOff = thumb.offsetHeight / 2;
     document.documentElement.style.scrollBehavior = 'auto'; toScroll(e.clientY); document.documentElement.style.scrollBehavior = '';
   });
   bar.addEventListener('pointerenter', function () { clearTimeout(hideT); bar.classList.add('is-on'); });
   bar.addEventListener('pointerleave', function () { if (!dragging) show(); });
-  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('scroll', function () { layout(); show(); }, { passive: true });
   window.addEventListener('resize', layout, { passive: true });
   if ('ResizeObserver' in window) new ResizeObserver(layout).observe(document.body);
   layout();
