@@ -27,5 +27,5 @@ marketing art in `/mnt/user/projects/expn-screenshots/` (ios/ and android/) with
 6. `shot-6` Budget tab (ios/4)
 
 Phone frames show a styled placeholder if a file is missing, so a removed shot never breaks the page.
-Replace a shot by overwriting the file and bumping `?v=` on `expn.css` is not needed; images have no
-query string, so use a new filename if browsers must see the change immediately.
+Images have no cache-bust query string, so when replacing a shot use a new filename (and update
+`expn/index.html`) if browsers must see the change immediately.
