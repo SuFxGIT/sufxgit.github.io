@@ -56,23 +56,91 @@
   }, { threshold: 0.5 });
   counters.forEach(function (el) { countObs.observe(el); });
 
-  /* Hero dot parallax (fine pointers only) */
-  var dots = document.querySelectorAll('.hero .dot');
-  var finePointer = window.matchMedia('(pointer: fine)').matches;
-  if (dots.length && !reduced && finePointer) {
-    var ticking = false;
-    function onScroll() {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        var y = window.scrollY;
-        dots.forEach(function (d, i) {
-          var f = 0.04 + (i % 3) * 0.03;
-          d.style.transform = 'translateY(' + (-y * f) + 'px)';
-        });
-        ticking = false;
-      });
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+/* Background: a fine dot grid that breathes in a slow wave, warms to orange near the cursor,
+   and a thin savings curve drifting across the hero. Static under reduced motion. */
+(function () {
+  'use strict';
+  var canvas = document.getElementById('bg');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = window.matchMedia('(pointer: fine)').matches;
+  var SP = 28, W = 0, H = 0, cols = 0, rows = 0, heroH = 0;
+  var mouse = { x: -1e4, y: -1e4 }, t = 0, last = 0, running = false;
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.ceil(W / SP) + 1; rows = Math.ceil(H / SP) + 1;
+    var hero = document.querySelector('.hero');
+    heroH = hero ? hero.offsetTop + hero.offsetHeight : H;
+    draw();
   }
+
+  function curve(yBase, amp1, amp2, phase, alpha, width) {
+    var g = ctx.createLinearGradient(0, 0, W, 0);
+    g.addColorStop(0, 'rgba(255,140,0,0)');
+    g.addColorStop(0.25, 'rgba(255,140,0,' + alpha + ')');
+    g.addColorStop(0.75, 'rgba(255,140,0,' + alpha + ')');
+    g.addColorStop(1, 'rgba(255,140,0,0)');
+    ctx.strokeStyle = g; ctx.lineWidth = width; ctx.beginPath();
+    for (var x = 0; x <= W + 12; x += 12) {
+      var y = yBase + Math.sin(x * 0.0035 + t * 0.35 + phase) * amp1 + Math.sin(x * 0.012 - t * 0.22 + phase) * amp2;
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    var sy = window.scrollY || 0;
+    var R = 170, R2 = R * R;
+    for (var r = 0; r < rows; r++) {
+      var y = r * SP + SP / 2;
+      for (var c = 0; c < cols; c++) {
+        var x = c * SP + SP / 2;
+        var w = Math.sin(x * 0.016 + t * 0.5) * Math.cos((y + sy * 0.25) * 0.013 - t * 0.35);
+        var a = 0.06 + (w + 1) * 0.05;
+        var dx = x - mouse.x, dy = y - mouse.y, d2 = dx * dx + dy * dy;
+        var m = d2 < R2 ? 1 - Math.sqrt(d2) / R : 0;
+        if (m > 0) {
+          ctx.fillStyle = 'rgba(255,140,0,' + Math.min(1, a + m * 0.75) + ')';
+          ctx.beginPath(); ctx.arc(x, y, 1 + m * 1.5, 0, 6.2832); ctx.fill();
+        } else {
+          ctx.fillStyle = 'rgba(255,255,255,' + a + ')';
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
+      }
+    }
+    var heroBottom = heroH - sy;
+    if (heroBottom > 0) {
+      ctx.save();
+      ctx.beginPath(); ctx.rect(0, 0, W, heroBottom); ctx.clip();
+      var base = Math.min(heroH * 0.62, H * 0.62) - sy;
+      curve(base, 70, 22, 0, 0.32, 1.4);
+      curve(base + 46, 55, 18, 1.7, 0.12, 1);
+      ctx.restore();
+    }
+  }
+
+  function frame(ts) {
+    if (!running) return;
+    if (ts - last > 33) { t += (ts - last) / 1000; last = ts; draw(); }
+    requestAnimationFrame(frame);
+  }
+  function start() { if (running || reduced) return; running = true; last = performance.now(); requestAnimationFrame(frame); }
+  function stop() { running = false; }
+
+  window.addEventListener('resize', resize, { passive: true });
+  if (fine) {
+    window.addEventListener('pointermove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+    window.addEventListener('pointerleave', function () { mouse.x = -1e4; mouse.y = -1e4; }, { passive: true });
+  }
+  document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+  if (reduced) window.addEventListener('scroll', draw, { passive: true });
+  resize(); start();
 })();
