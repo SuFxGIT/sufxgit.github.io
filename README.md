@@ -17,14 +17,14 @@ on a `<span>` for a store that is not live yet.
 (vanilla, no dependencies). It loads Inter from Google Fonts; that is the only external resource.
 
 Screenshots live in `assets/expn/` as `shot-1.png` to `shot-6.png`. They are all cropped from the
-Android store art in `/mnt/user/projects/expn-screenshots/android/` (inner screen x 243 to 883,
+Android store art in `/mnt/user/projects/expn-screenshots/android-2.3 (1125x2000)/` (inner screen x 243 to 883,
 1274px tall starting below the status bar, nav bar excluded) with Pillow in Docker, so every frame
 has identical chrome. Mapping:
 
 1. `shot-1` hero: Expenses (android/2)
 2. `shot-2` Trends, savings rate and cash flow (android/6)
 3. `shot-3` Stats overview (android/1)
-4. `shot-4` Calendar, used for the reminders step (android/5, crop starts at y=518)
+4. `shot-4` Calendar, used for the reminders step (android/5, crop y=518 to 1748, bottom filled with the app background because the art has a ghost tab bar below the real one)
 5. `shot-5` Budgets (android/4)
 6. `shot-6` Income (android/3), currently unused
 
