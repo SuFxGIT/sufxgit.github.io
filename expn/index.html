@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="expn.css?v=10">
+  <link rel="stylesheet" href="expn.css?v=11">
 </head>
 <body>
 
@@ -59,6 +59,7 @@
             <li>Free to use</li>
             <li>No subscription</li>
             <li>No ads, no tracking</li>
+            <li>Android, iOS and web</li>
           </ul>
         </div>
         <div class="hero-phone" data-reveal style="--delay:.2s">
@@ -151,6 +152,44 @@
       </div>
     </section>
 
+    <!-- SYNC -->
+    <section class="sync" id="sync" data-sb="Everywhere">
+      <div class="container">
+        <div class="section-head sync-head" data-reveal>
+          <p class="eyebrow">Android, iOS and web</p>
+          <h2>One account. Every device. Always in sync.</h2>
+          <p class="sync-lede">EXPN runs on your phone, your tablet and in any browser at expn.web.app. With Premium, every entry, budget and reminder syncs both ways between Android, iOS and the web, so the number you see at your desk is the number you see on your phone.</p>
+          <div class="platforms">
+            <span class="platform"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85a.63.63 0 0 0-.83.22l-1.88 3.24a11.43 11.43 0 0 0-8.94 0L5.65 5.67a.63.63 0 0 0-.83-.22c-.3.16-.42.54-.26.85L6.4 9.48A10.81 10.81 0 0 0 1 18h22a10.81 10.81 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>Android</span>
+            <span class="platform"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45z"/></svg>iOS</span>
+            <span class="platform"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Web</span>
+            <span class="platform platform-sync">Synced with Premium</span>
+          </div>
+        </div>
+        <div class="sync-stage" data-reveal>
+          <div class="laptop">
+            <div class="laptop-screen">
+              <img class="web-shot is-active" data-web="stats" src="../assets/expn/web-stats.webp" alt="EXPN web app, Stats page with cash flow chart and savings rate">
+              <img class="web-shot" data-web="expenses" src="../assets/expn/web-expenses.webp" alt="EXPN web app, Expenses table">
+              <img class="web-shot" data-web="budget" src="../assets/expn/web-budget.webp" alt="EXPN web app, Budget page">
+              <img class="web-shot" data-web="calendar" src="../assets/expn/web-calendar.webp" alt="EXPN web app, Calendar">
+            </div>
+            <div class="laptop-base"></div>
+          </div>
+          <div class="sync-phone-wrap" aria-hidden="true">
+            <div class="phone"><div class="phone-screen"><img class="shot" src="../assets/expn/shot-1.png" alt=""></div></div>
+          </div>
+        </div>
+        <div class="web-tabs" role="tablist" aria-label="Web app pages" data-reveal>
+          <button type="button" class="is-active" data-web="stats" role="tab" aria-selected="true">Stats</button>
+          <button type="button" data-web="expenses" role="tab" aria-selected="false">Expenses</button>
+          <button type="button" data-web="budget" role="tab" aria-selected="false">Budget</button>
+          <button type="button" data-web="calendar" role="tab" aria-selected="false">Calendar</button>
+          <a class="web-open" href="https://expn.web.app/" target="_blank" rel="noopener">Open expn.web.app</a>
+        </div>
+      </div>
+    </section>
+
     <!-- COMPARISON -->
     <section class="compare" data-sb="Compare">
       <div class="container">
@@ -164,6 +203,7 @@
             <div role="columnheader" class="col-expn"><img src="../assets/expn/wordmark.png" alt="EXPN"></div>
             <div role="columnheader">Typical trackers</div>
           </div>
+          <div class="compare-row" role="row" data-reveal style="--delay:.02s"><div role="cell">Android, iOS and web, synced</div><div role="cell" class="yes">Yes</div><div role="cell" class="no">Rare</div></div>
           <div class="compare-row" role="row" data-reveal style="--delay:.05s"><div role="cell">Savings rate over time</div><div role="cell" class="yes">Yes</div><div role="cell" class="no">Rare</div></div>
           <div class="compare-row" role="row" data-reveal style="--delay:.1s"><div role="cell">Running cash flow chart</div><div role="cell" class="yes">Yes</div><div role="cell" class="no">Rare</div></div>
           <div class="compare-row" role="row" data-reveal style="--delay:.15s"><div role="cell">Reminder on each expense</div><div role="cell" class="yes">Yes</div><div role="cell" class="no">Generic only</div></div>
@@ -308,7 +348,7 @@
           <div class="web-copy">
             <p class="eyebrow"><span class="new-tag">New</span>Premium now includes the web app</p>
             <h3>Your numbers, on any screen.</h3>
-            <p>Premium unlocks EXPN on the web. Sign in with the same account and everything is there, synced both ways with the iOS and Android apps. Log an expense at your desk, see it on your phone a moment later. Same stats, same budgets, same reminders.</p>
+            <p>Premium unlocks EXPN on the web. Sign in with the same account and everything is there, synced both ways between Android, iOS and the browser. Log an expense at your desk, see it on your phone a moment later. Same stats, same budgets, same reminders.</p>
             <div class="card-buttons">
               <a class="btn btn-accent" href="https://expn.web.app/" target="_blank" rel="noopener">Open the web app</a>
               <span class="web-url">expn.web.app</span>
@@ -316,7 +356,7 @@
           </div>
           <div class="web-visual" aria-hidden="true">
             <div class="sync-devices">
-              <div class="sync-laptop"><img src="../assets/expn/shot-3.png" alt=""></div>
+              <div class="sync-laptop"><img src="../assets/expn/web-expenses.webp" alt=""></div>
               <div class="sync-phone"><img src="../assets/expn/shot-1.png" alt=""></div>
             </div>
           </div>
@@ -364,6 +404,6 @@
     </div>
   </footer>
 
-  <script src="expn.js?v=8" defer></script>
+  <script src="expn.js?v=9" defer></script>
 </body>
 </html>

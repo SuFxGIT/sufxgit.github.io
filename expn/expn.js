@@ -57,6 +57,17 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeMarquee);
   }
 
+  /* Web app tabs: swap the laptop screenshot */
+  var webTabs = document.querySelectorAll('.web-tabs button');
+  var webShots = document.querySelectorAll('.web-shot');
+  webTabs.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var key = btn.dataset.web;
+      webTabs.forEach(function (b) { var on = b === btn; b.classList.toggle('is-active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      webShots.forEach(function (im) { im.classList.toggle('is-active', im.dataset.web === key); });
+    });
+  });
+
   /* Counters */
   var counters = document.querySelectorAll('[data-count]');
   var countObs = new IntersectionObserver(function (entries) {
