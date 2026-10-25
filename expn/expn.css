@@ -57,6 +57,8 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px)
   opacity: 0; transition: opacity .15s ease, transform .15s ease, color .15s, border-color .15s;
 }
 .sb:hover .sb-mark::after, .sb.is-drag .sb-mark::after { opacity: 1; transform: translate(0, -50%); }
+.sb:hover .sb-mark::after { pointer-events: auto; cursor: pointer; }
+.sb-mark { z-index: 2; }
 .sb-mark.is-current::after { color: var(--text); }
 .sb-mark:hover::after { color: var(--accent); border-color: rgba(255,140,0,0.5); }
 
