@@ -20,38 +20,44 @@
 
   <main class="container privacy-content">
     <h1>Privacy Policy</h1>
-    <p class="muted">Effective date: August 14, 2026. This policy applies to all SUFX apps.</p>
+    <p class="muted">Effective date: October 26, 2026. This policy applies to all SUFX apps.</p>
 
     <h2>The short version</h2>
-    <p>SUFX apps are built to keep your data yours. EXPN works fully without an account and stores your financial data locally on your device. If you choose to sign in and use the optional cloud sync, your data is stored in a private space tied to your account so it can be restored across your devices. There are no ads, no data selling, and no tracking beyond anonymous crash reporting.</p>
+    <p>SUFX apps are built to keep your data yours. EXPN works fully without an account and stores your financial data locally on your device. If you buy EXPN Premium and sign in, your data is also stored in a private space tied to your account, so it syncs across your devices and the EXPN website. There are no ads, no data selling, and no tracking beyond anonymous crash reporting.</p>
 
     <h2>Data stored on your device</h2>
-    <p>EXPN keeps everything you enter in the app (expenses, income, budgets, profiles, settings) in a local database on your device. Unless you sign in and use cloud sync, this data never leaves your device except in backup files you export yourself. Backups are files you create and keep wherever you choose; SUFX never receives a copy.</p>
+    <p>EXPN keeps everything you enter in the app (expenses, income, budgets, profiles, settings) in a local database on your device. Unless you use cloud sync, this data never leaves your device except in backup files you export yourself. Backups are files you create and keep wherever you choose; SUFX never receives a copy. Reminders are scheduled on your device, and App lock uses your device's own biometrics or passcode; neither sends anything to SUFX.</p>
 
     <h2>Sign-in</h2>
-    <p>Signing in is optional and available through Apple or Google, handled by Firebase Authentication. When you sign in, your basic account identifiers (name and email address) are processed to identify your account, and cloud sync becomes available as described below.</p>
+    <p>Signing in is optional and available with Apple, Google, or an email address and password, handled by Firebase Authentication. When you sign in, your basic account identifiers (name, if your provider shares it, and email address) are processed to identify your account. If you sign up with email, Firebase sends you a verification email.</p>
 
-    <h2>Cloud sync</h2>
-    <p>When you are signed in, EXPN syncs your app data (expenses, income, budgets, profiles, and settings) to a private space tied to your account in Google Firebase (Cloud Firestore), so your data can be restored across your devices. Only your account can access this data, and every request is protected by Firebase security rules and device attestation (App Check). If you never sign in, nothing is uploaded.</p>
+    <h2>Cloud sync (Premium)</h2>
+    <p>With EXPN Premium, when you are signed in, EXPN syncs your app data (expenses, income, budgets, profiles, and settings) to a private space tied to your account in Google Firebase (Cloud Firestore), so it is available on all your devices. Only your account can access this data. Every request is protected by Firebase security rules and by device attestation (Firebase App Check, which uses Google Play Integrity on Android, Apple App Attest or DeviceCheck on iPhone, and Google reCAPTCHA Enterprise on the website). If you never sign in, or do not have Premium, nothing is uploaded.</p>
+
+    <h2>EXPN on the web (Premium)</h2>
+    <p>Premium includes the EXPN website (expn.web.app). You sign in with the same account, and the website reads and edits your synced data directly in your browser. Your browser keeps only small preferences (language, the profile you last opened) and cached exchange rates; your financial data is not stored in the browser after you close or sign out.</p>
+
+    <h2>Purchases and Premium</h2>
+    <p>In-app purchases are processed entirely by the App Store or Google Play. SUFX never sees or stores your payment details. To apply Premium to your account on every device, EXPN sends your purchase receipt identifiers to SUFX's server (Firebase Cloud Functions), which checks them with Apple or Google. SUFX stores the purchase's identifier, which account it belongs to, and its status (for example, whether it was refunded or is a test purchase), so Premium follows your account and one purchase cannot be reused by other accounts. New purchases also carry an anonymous account token derived from your account ID, so Apple and Google can tie the purchase to your EXPN account without learning who you are. Apple and Google notify SUFX's server of refunds so Premium can be updated.</p>
 
     <h2>Exchange rates</h2>
-    <p>EXPN fetches currency exchange rates from a public dataset over HTTPS. This request contains no personal data.</p>
+    <p>EXPN fetches currency exchange rates from a public dataset (served by the jsDelivr network) over HTTPS. This request contains no personal or financial data.</p>
+
+    <h2>App updates</h2>
+    <p>EXPN checks Firebase Remote Config for notices about new app versions. This uses a random app installation identifier and contains no personal or financial data.</p>
 
     <h2>Crash reports</h2>
-    <p>SUFX apps use Firebase Crashlytics to collect anonymous crash reports (device model, operating system version, and the technical details of the crash). This data contains none of your personal or financial information and is used only to find and fix bugs.</p>
-
-    <h2>Purchases</h2>
-    <p>In-app purchases are processed entirely by the App Store or Google Play. SUFX never sees or stores your payment details.</p>
+    <p>SUFX apps use Firebase Crashlytics to collect anonymous crash and error reports (device model, operating system version, app version, and the technical details of the problem). These reports contain none of your personal or financial information and are used only to find and fix bugs.</p>
 
     <h2>What SUFX does not do</h2>
     <ul>
       <li>No advertising and no ad networks.</li>
       <li>No analytics beyond crash reporting.</li>
-      <li>No selling, renting, or sharing of your data with third parties.</li>
+      <li>No selling, renting, or sharing of your data with third parties. The services named above (Google Firebase, Apple, Google Play, and jsDelivr) process data only to provide these features.</li>
     </ul>
 
     <h2>Data deletion</h2>
-    <p>Uninstalling an app deletes its local data from your device. Deleting your account inside EXPN (Settings, Delete Account) permanently removes your account and any synced cloud data. You can also email <a href="mailto:sufxga@gmail.com">sufxga@gmail.com</a> for help with deletion.</p>
+    <p>Uninstalling an app deletes its local data from your device. "Delete all data" in EXPN's settings deletes the data on that device; your cloud copy stays until you delete your account. Deleting your account inside EXPN (Settings, Delete Account) permanently removes your account, your synced cloud data, and your account's Premium record; the purchase record is detached from your account so the purchase can be restored to a new account. You can also email <a href="mailto:sufxga@gmail.com">sufxga@gmail.com</a> for help with deletion.</p>
 
     <h2>Changes to this policy</h2>
     <p>If this policy changes, the updated version will be posted on this page with a new effective date.</p>
